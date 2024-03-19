@@ -9,6 +9,9 @@ serverPort = 8080
 
 class MyServer(BaseHTTPRequestHandler):
   def do_GET(self):
+    x_forwarded_for = self.headers.get('X-Forwarded-For')
+    if x_forwarded_for:
+      self.client_address = (x_forwarded_for.split(',')[0], self.client_address[1])
     self.server_version = 'Teapot/1.0.0'
     self.sys_version = 'Coffee/1.0.0'
     if self.path == '/healthz':
