@@ -28,6 +28,11 @@ class MyServer(BaseHTTPRequestHandler):
     self.end_headers()
     self.wfile.write(bytes("OK\n", "utf-8"))
 
+  def log_request(self, code='-', size='-'):
+    if self.path == '/healthz':
+      return
+    return super().log_request(code, size)
+
 if __name__ == "__main__":
   webServer = HTTPServer((bindAddress, serverPort), MyServer)
 
