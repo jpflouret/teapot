@@ -1,4 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import signal
+import sys
+import threading
+import time
 
 bindAddress = ""
 serverPort = 8080
@@ -14,12 +18,20 @@ class MyServer(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
   webServer = HTTPServer((bindAddress, serverPort), MyServer)
+
+  def stop(signal_number, frame):
+    print('Server shutting down.')
+    webServer.shutdown()
+    sys.exit(0)
+
+  signal.signal(signal.SIGTERM, stop)
+  signal.signal(signal.SIGINT, stop)
+
+  thread = threading.Thread(target=webServer.serve_forever)
+  thread.daemon = True
+  thread.start()
+
   print("Server listening on %s:%s" % (bindAddress, serverPort))
 
-  try:
-    webServer.serve_forever()
-  except KeyboardInterrupt:
-    pass
-
-  webServer.server_close()
-  print("Server stopped.")
+  while True:
+      time.sleep(1)
