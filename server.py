@@ -53,5 +53,4 @@ if __name__ == "__main__":
 
   print("Server listening on %s:%s" % (bindAddress, serverPort))
 
-  while True:
-      time.sleep(1)
+  thread.join()
